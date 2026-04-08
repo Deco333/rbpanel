@@ -12,15 +12,17 @@ import ctypes
 
 
 # ──────────────────────────────────────────────────────────────
-# Offsets (обновляются с imtheo.lol)
+# Offsets (Updated from https://imtheo.lol/Offsets)
+# Roblox Version: version-689e359b09ad43b0
+# Dumped: 00:18 02/04/2026
 # ──────────────────────────────────────────────────────────────
 
 TASK_SCHEDULER_OFFSETS = {
-    "Pointer": 0x8428188,
-    "JobStart": 0xc8,
-    "JobEnd": 0xd0,
-    "JobName": 0x18,
-    "MaxFPS": 0xb0,
+    "Pointer": 0x8428188,   # 138576264
+    "JobStart": 0xC8,       # 200
+    "JobEnd": 0xD0,         # 208
+    "JobName": 0x18,        # 24
+    "MaxFPS": 0xB0,         # 176
 }
 
 

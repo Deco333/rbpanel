@@ -13,15 +13,17 @@ import math
 
 
 # ──────────────────────────────────────────────────────────────
-# Offsets
+# Offsets (Updated from https://imtheo.lol/Offsets)
+# Roblox Version: version-689e359b09ad43b0
+# Dumped: 00:18 02/04/2026
 # ──────────────────────────────────────────────────────────────
 
 VISUAL_ENGINE_OFFSETS = {
-    "Pointer": 0x7ef81d8,
-    "Dimensions": 0xa60,     # Vec2 (ширина, высота)
-    "ViewMatrix": 0x130,     # 4x4 float matrix (64 bytes)
-    "RenderView": 0xb40,
-    "FakeDataModel": 0xa40,
+    "Pointer": 0x7EF81D8,     # 133136856
+    "Dimensions": 0xA60,      # 2656 (ширина, высота)
+    "ViewMatrix": 0x130,      # 304 (4x4 float matrix)
+    "RenderView": 0xB40,      # 2880
+    "FakeDataModel": 0xA40,   # 2624
 }
 
 RENDER_VIEW_OFFSETS = {
