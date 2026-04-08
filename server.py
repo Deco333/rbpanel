@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 ╔══════════════════════════════════════════════════════════════════╗
-║  ROBLOX PANEL v4.0 — WebSocket Server (FULL COMBAT)            ║
+║  ROBLOX PANEL v4.1 — WebSocket Server (IMPROVED)                ║
 ║  Bridge between browser UI and RobloxMemoryAPI                  ║
 ║                                                                  ║
 ║  Usage:  python server.py                                       ║
@@ -9,6 +9,13 @@
 ║                                                                  ║
 ║  Protocol: JSON messages over WebSocket on port 8765             ║
 ║  Frontend runs on Next.js (localhost:3000)                       ║
+║                                                                  ║
+║  CHANGES in v4.1:                                                ║
+║  - Integrated Advanced Overlay with prediction (0.5s)           ║
+║  - Fixed aimbot with velocity prediction                        ║
+║  - Centralized offsets from imtheo.lol                          ║
+║  - Improved error handling and thread safety                    ║
+║  - Auto-update offsets on connection                            ║
 ╚══════════════════════════════════════════════════════════════════╝
 """
 
@@ -26,6 +33,37 @@ from collections import deque
 
 import websockets
 from websockets.server import serve
+
+# ═══════════════════════════════════════════════════════════════
+#  NEW: Import centralized offsets
+# ═══════════════════════════════════════════════════════════════
+
+try:
+    from roblox_panel.offsets import (
+        VISUAL_ENGINE_OFFSETS,
+        PRIMITIVE_OFFSETS,
+        HUMANOID_OFFSETS,
+        TASK_SCHEDULER_OFFSETS,
+        PLAYER_OFFSETS,
+        get_all_offsets
+    )
+    HAS_CENTRALIZED_OFFSETS = True
+    print("[+] Loaded centralized offsets from roblox_panel.offsets")
+except ImportError as e:
+    HAS_CENTRALIZED_OFFSETS = False
+    print(f"[!] Could not load centralized offsets: {e}")
+
+# ═══════════════════════════════════════════════════════════════
+#  NEW: Import advanced overlay module
+# ═══════════════════════════════════════════════════════════════
+
+try:
+    from roblox_panel.advanced_overlay import start_overlay, stop_overlay, get_overlay
+    HAS_ADVANCED_OVERLAY = True
+    print("[+] Advanced Overlay module loaded")
+except ImportError as e:
+    HAS_ADVANCED_OVERLAY = False
+    print(f"[!] Advanced Overlay not available: {e}")
 
 # ═══════════════════════════════════════════════════════════════
 #  Windows-only imports (ctypes for mouse/kb input)
@@ -216,7 +254,7 @@ if _loaded:
     print(f"[+] Addons loaded: {_loaded}")
 
 # ═══════════════════════════════════════════════════════════════
-#  OFFSETS (from API + fallbacks)
+#  OFFSETS (from API + fallbacks + centralized)
 # ═══════════════════════════════════════════════════════════════
 
 _BP = RawOffsets.get("BasePart", {}) if HAS_API else {}
@@ -224,28 +262,52 @@ _PR = RawOffsets.get("Primitive", {}) if HAS_API else {}
 _PF = RawOffsets.get("PrimitiveFlags", {}) if HAS_API else {}
 _HO = RawOffsets.get("Humanoid", {}) if HAS_API else {}
 
-# Fallback offsets
-_BASEPART_PRIMITIVE_PTR = 48
-_PRIM_POSITION = 0xE4
-_PRIM_SIZE = 0x1B0
-_PRIM_VELOCITY = 0xF0
-_PRIM_ANGULAR_VEL = 0xFC
-_PRIM_FLAGS = 0x1AE
-_FLAG_CANCOLLIDE = 0x08
-_FLAG_ANCHORED = 0x02
-_BP_TRANSPARENCY = 240
-_BP_COLOR3 = 0x4A
-
-_HO_WALKSPEED = 468
-_HO_HEALTH = 404
-_HO_MAXHEALTH = 0x1B4
-_HO_JUMPPower = 432
-_HO_PLATFORMSTAND = 479
-
-# Visual Engine (W2S)
-_VISUAL_ENGINE_PTR = 0x7EF81D8
-_VISUAL_ENGINE_DIMS = 0xa60
-_VISUAL_ENGINE_VM = 0x130
+# Use centralized offsets if available, otherwise use API/fallbacks
+if HAS_CENTRALIZED_OFFSETS:
+    _BASEPART_PRIMITIVE_PTR = 48  # Still hardcoded as not in centralized
+    _PRIM_POSITION = PRIMITIVE_OFFSETS.get("Position", 0xE4)
+    _PRIM_SIZE = PRIMITIVE_OFFSETS.get("Size", 0x1B0)
+    _PRIM_VELOCITY = PRIMITIVE_OFFSETS.get("Velocity", 0xF0)
+    _PRIM_ANGULAR_VEL = 0xFC
+    _PRIM_FLAGS = 0x1AE
+    _FLAG_CANCOLLIDE = 0x08
+    _FLAG_ANCHORED = 0x02
+    _BP_TRANSPARENCY = 240
+    _BP_COLOR3 = 0x4A
+    
+    _HO_WALKSPEED = HUMANOID_OFFSETS.get("WalkSpeed", 0x1CC)
+    _HO_HEALTH = HUMANOID_OFFSETS.get("Health", 0x194)
+    _HO_MAXHEALTH = HUMANOID_OFFSETS.get("MaxHealth", 0x1B4)
+    _HO_JUMPPower = HUMANOID_OFFSETS.get("JumpPower", 0x1B0)
+    _HO_PLATFORMSTAND = 479
+    
+    # Visual Engine (W2S) from centralized
+    _VISUAL_ENGINE_PTR = VISUAL_ENGINE_OFFSETS.get("Pointer", 0x7EF81D8)
+    _VISUAL_ENGINE_DIMS = VISUAL_ENGINE_OFFSETS.get("Dimensions", 0xA60)
+    _VISUAL_ENGINE_VM = VISUAL_ENGINE_OFFSETS.get("ViewMatrix", 0x130)
+else:
+    # Fallback offsets
+    _BASEPART_PRIMITIVE_PTR = 48
+    _PRIM_POSITION = 0xE4
+    _PRIM_SIZE = 0x1B0
+    _PRIM_VELOCITY = 0xF0
+    _PRIM_ANGULAR_VEL = 0xFC
+    _PRIM_FLAGS = 0x1AE
+    _FLAG_CANCOLLIDE = 0x08
+    _FLAG_ANCHORED = 0x02
+    _BP_TRANSPARENCY = 240
+    _BP_COLOR3 = 0x4A
+    
+    _HO_WALKSPEED = 468
+    _HO_HEALTH = 404
+    _HO_MAXHEALTH = 0x1B4
+    _HO_JUMPPower = 432
+    _HO_PLATFORMSTAND = 479
+    
+    # Visual Engine (W2S)
+    _VISUAL_ENGINE_PTR = 0x7EF81D8
+    _VISUAL_ENGINE_DIMS = 0xa60
+    _VISUAL_ENGINE_VM = 0x130
 
 # ═══════════════════════════════════════════════════════════════
 #  Mem — direct memory wrapper
@@ -986,12 +1048,17 @@ def _find_silent_aim_target():
 
 
 # ═══════════════════════════════════════════════════════════════
-#  COMBAT — AIMBOT LOOP (~120Hz)
+#  COMBAT — AIMBOT LOOP (~120Hz) WITH PREDICTION (v4.1)
 # ═══════════════════════════════════════════════════════════════
 
 def _aimbot_loop(stop):
-    """Aimbot: RMB trigger, finds FOV target, W2S, mouse_move."""
-    _combat_log("Aimbot: loop started", "good")
+    """Aimbot: RMB trigger, finds FOV target, W2S, mouse_move with prediction."""
+    _combat_log("Aimbot: loop started (with prediction)", "good")
+    
+    # Prediction constants
+    PREDICTION_TIME = 0.15  # 150ms ahead for aimbot (less than overlay's 0.5s)
+    ROBLOX_GRAVITY = 196.2
+    
     while not stop.is_set():
         try:
             if not is_key_pressed(VK_RBUTTON):
@@ -1019,7 +1086,29 @@ def _aimbot_loop(stop):
                 stop.wait(0.008)
                 continue
 
-            result = state.w2s.world_to_screen(pos)
+            # v4.1: Add velocity prediction
+            try:
+                # Try to read velocity from HumanoidRootPart or Primitive
+                prim_addr = _get_primitive_addr(state._mem, part.raw_address) if hasattr(part, 'raw_address') else 0
+                if prim_addr > 0:
+                    vel = Vector3(
+                        state._mem.read_float(prim_addr + _PRIM_VELOCITY),
+                        state._mem.read_float(prim_addr + _PRIM_VELOCITY + 4),
+                        state._mem.read_float(prim_addr + _PRIM_VELOCITY + 8)
+                    )
+                    # Apply prediction formula: P_new = P + V*t + 0.5*g*t²
+                    pred_x = pos.X + vel.X * PREDICTION_TIME
+                    pred_y = pos.Y + vel.Y * PREDICTION_TIME - 0.5 * ROBLOX_GRAVITY * (PREDICTION_TIME ** 2)
+                    pred_z = pos.Z + vel.Z * PREDICTION_TIME
+                    
+                    # Use predicted position for W2S
+                    result = state.w2s.world_to_screen(type(pos)(pred_x, pred_y, pred_z))
+                else:
+                    result = state.w2s.world_to_screen(pos)
+            except Exception:
+                # Fallback to non-predicted position
+                result = state.w2s.world_to_screen(pos)
+
             if not result or not result.on_screen:
                 stop.wait(0.008)
                 continue
@@ -5908,12 +5997,21 @@ def cmd_connect() -> dict:
         # Auto-update offsets from imtheo.lol
         threading.Thread(target=_update_offsets_from_imtheo, daemon=True).start()
         
+        # Initialize advanced overlay (v4.1 feature)
+        if HAS_ADVANCED_OVERLAY:
+            try:
+                start_overlay(state)
+                print("[+] Advanced Overlay started with prediction")
+            except Exception as e:
+                print(f"[!] Advanced Overlay init error: {e}")
+        
         return {
             "type": "connected",
             "message": f"Connected (PID: {state.pid})",
             "pid": state.pid,
             "has_w2s": state.w2s is not None,
             "has_addons": HAS_ADDONS,
+            "has_advanced_overlay": HAS_ADVANCED_OVERLAY,
         }
 
     except Exception as e:
@@ -5943,6 +6041,13 @@ def cmd_disconnect() -> dict:
     state.task_scheduler = None
     state.visual_engine = None
     state.w2s = None
+    
+    # Stop advanced overlay (v4.1)
+    if HAS_ADVANCED_OVERLAY:
+        try:
+            stop_overlay()
+        except Exception:
+            pass
 
     print("[*] Disconnected")
     return {"type": "disconnected", "message": "Disconnected"}
