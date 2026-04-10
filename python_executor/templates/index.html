@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python External Executor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐍 Python External Executor</h1>
+            <p class="subtitle">Roblox Level 8 Script Executor</p>
+        </header>
+
+        <div class="status-bar">
+            <div class="status-item">
+                <span class="status-label">Status:</span>
+                <span id="status-indicator" class="status-value disconnected">Disconnected</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">PID:</span>
+                <span id="pid-display" class="status-value">-</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Bridge:</span>
+                <span id="bridge-status" class="status-value">Offline</span>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="control-panel">
+                <h2>Process Control</h2>
+                
+                <div class="process-selector">
+                    <label for="process-select">Select Process:</label>
+                    <select id="process-select">
+                        <option value="">-- Select a process --</option>
+                    </select>
+                    <button id="refresh-btn" class="btn btn-secondary" title="Refresh processes">🔄</button>
+                </div>
+
+                <div class="button-group">
+                    <button id="attach-btn" class="btn btn-primary">
+                        <span class="btn-icon">📎</span> Attach
+                    </button>
+                    <button id="detach-btn" class="btn btn-danger" disabled>
+                        <span class="btn-icon">🔌</span> Detach
+                    </button>
+                </div>
+            </div>
+
+            <div class="editor-panel">
+                <h2>Script Editor</h2>
+                
+                <div class="toolbar">
+                    <button id="execute-btn" class="btn btn-success" disabled>
+                        <span class="btn-icon">▶️</span> Execute
+                    </button>
+                    <button id="clear-btn" class="btn btn-warning">
+                        <span class="btn-icon">🗑️</span> Clear
+                    </button>
+                </div>
+
+                <textarea id="script-editor" placeholder="Paste your Lua script here...&#10;&#10;Example:&#10;print('Hello from Python Executor!')"></textarea>
+            </div>
+        </div>
+
+        <div class="console-panel">
+            <h2>Console</h2>
+            <div id="console-output" class="console-output"></div>
+            <button id="console-clear-btn" class="btn btn-sm btn-secondary">Clear Console</button>
+        </div>
+
+        <footer>
+            <p>Python External Executor &copy; 2024 | Built with Flask & Pure Python</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
