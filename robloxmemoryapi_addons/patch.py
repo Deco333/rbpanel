@@ -40,10 +40,11 @@ from .enhanced_instance import patch_rbx_instance
 
 # ──────────────────────────────────────────────────────────────
 # DataModel pointer chain
+# Updated: 09/04/2026 — version-26c90be22e0d4758 (imtheo.lol)
 # ──────────────────────────────────────────────────────────────
 
-FAKEDATAMODEL_POINTER = 0x834a988
-FAKEDATAMODEL_TO_REAL = 0x1c0
+FAKEDATAMODEL_POINTER = 0x7A1D388   # 128045960
+FAKEDATAMODEL_TO_REAL = 0x1C0       # 448
 
 
 def get_data_model_address(memory_module) -> int:
