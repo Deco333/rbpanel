@@ -14,12 +14,12 @@ import math
 
 # ──────────────────────────────────────────────────────────────
 # Offsets (Updated from https://imtheo.lol/Offsets)
-# Roblox Version: version-689e359b09ad43b0
-# Dumped: 00:18 02/04/2026
+# Roblox Version: version-26c90be22e0d4758
+# Dumped: 21:56 09/04/2026
 # ──────────────────────────────────────────────────────────────
 
 VISUAL_ENGINE_OFFSETS = {
-    "Pointer": 0x7EF81D8,     # 133136856
+    "Pointer": 0x75CC058,     # 123519064
     "Dimensions": 0xA60,      # 2656 (ширина, высота)
     "ViewMatrix": 0x130,      # 304 (4x4 float matrix)
     "RenderView": 0xB40,      # 2880
@@ -27,10 +27,10 @@ VISUAL_ENGINE_OFFSETS = {
 }
 
 RENDER_VIEW_OFFSETS = {
-    "LightingValid": 0x148,
-    "SkyValid": 0x0,
-    "VisualEngine": 0x10,
-    "DeviceD3D11": 0x8,
+    "LightingValid": 0x148,   # 328
+    "SkyValid": 0x28D,        # 653
+    "VisualEngine": 0x10,     # 16
+    "DeviceD3D11": 0x8,       # 8
 }
 
 

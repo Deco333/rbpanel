@@ -55,19 +55,19 @@ NOP_HOOK_MIN = 14       # Минимум байт для NOP (JMP placeholder)
 # Оффсеты для готовых пресетов
 # ──────────────────────────────────────────────────────────────
 
-# Updated: 02/04/2026 — version-689e359b09ad43b0 (imtheo.lol)
-FAKEDATAMODEL_POINTER = 0x834a988
-FAKEDATAMODEL_TO_REAL = 0x1c0
+# Updated: 09/04/2026 — version-26c90be22e0d4758 (imtheo.lol)
+FAKEDATAMODEL_POINTER = 0x7A1D388   # 128045960
+FAKEDATAMODEL_TO_REAL = 0x1C0       # 448
 
-SCRIPT_CONTEXT_OFFSET = 0x3F0
-REQUIRE_BYPASS_OFFSET = 0x861
+SCRIPT_CONTEXT_OFFSET = 0x3F0       # 1008
+REQUIRE_BYPASS_OFFSET = 0x0         # 0 (changed in new version)
 
-TASK_SCHEDULER_POINTER = 0x8428188
-TASK_SCHEDULER_MAX_FPS = 0xB0
+TASK_SCHEDULER_POINTER = 0x7AF5090  # 128929936
+TASK_SCHEDULER_MAX_FPS = 0xB0       # 176
 
-WORKSPACE_OFFSET = 0x178
-WORLD_OFFSET = 0x400
-WORLD_GRAVITY = 0x1D8
+WORKSPACE_OFFSET = 0x178            # 376
+WORLD_OFFSET = 0x400                # 1024
+WORLD_GRAVITY = 0x1D8               # 472
 
 
 # ══════════════════════════════════════════════════════════════

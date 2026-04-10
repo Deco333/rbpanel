@@ -50,36 +50,36 @@ from typing import Optional, List, Dict
 # Оффсеты (обновляются с imtheo.lol)
 # ──────────────────────────────────────────────────────────────
 
-# Updated: 02/04/2026 — version-689e359b09ad43b0 (imtheo.lol)
+# Updated: 09/04/2026 — version-26c90be22e0d4758 (imtheo.lol)
 
 # DataModel pointer chain
-FAKEDATAMODEL_POINTER = 0x834a988
-FAKEDATAMODEL_TO_REAL = 0x1c0
+FAKEDATAMODEL_POINTER = 0x7A1D388   # 128045960
+FAKEDATAMODEL_TO_REAL = 0x1C0       # 448
 
 # Instance traversal
-INSTANCE_NAME = 0xB0
-INSTANCE_CLASS_DESCRIPTOR = 0x18
-INSTANCE_CLASS_NAME = 0x8
-INSTANCE_CHILDREN_START = 0x78
-INSTANCE_CHILDREN_END = 0x8
-INSTANCE_CHILDREN_STRIDE = 0x10
-INSTANCE_PARENT = 0x70
+INSTANCE_NAME = 0xB0                # 176
+INSTANCE_CLASS_DESCRIPTOR = 0x18    # 24
+INSTANCE_CLASS_NAME = 0x8           # 8
+INSTANCE_CHILDREN_START = 0x78      # 120
+INSTANCE_CHILDREN_END = 0x8         # 8
+INSTANCE_CHILDREN_STRIDE = 0x10     # 16
+INSTANCE_PARENT = 0x70              # 112
 
 # Script bytecode offsets
-LOCALSCRIPT_BYTECODE = 0x1A8
-MODULESCRIPT_BYTECODE = 0x150
-SCRIPT_BYTECODE = 0x1A8
+LOCALSCRIPT_BYTECODE = 0x1A8        # 424
+MODULESCRIPT_BYTECODE = 0x150       # 336
+SCRIPT_BYTECODE = 0x1A8             # 424
 
 # ByteCode struct (внутри байткода)
-BYTECODE_POINTER = 0x10
-BYTECODE_SIZE = 0x20
+BYTECODE_POINTER = 0x10             # 16
+BYTECODE_SIZE = 0x20                # 32
 
 # ScriptContext
-SCRIPT_CONTEXT_OFFSET = 0x3F0
-REQUIRE_BYPASS_OFFSET = 0x861
+SCRIPT_CONTEXT_OFFSET = 0x3F0       # 1008
+REQUIRE_BYPASS_OFFSET = 0x0         # 0 (changed in new version)
 
 # TaskScheduler
-TASK_SCHEDULER_POINTER = 0x8428188
+TASK_SCHEDULER_POINTER = 0x7AF5090  # 128929936
 
 
 # ══════════════════════════════════════════════════════════════
