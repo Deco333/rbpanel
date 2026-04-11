@@ -146,8 +146,20 @@ class ExecutorUI {
             
             if (data.success) {
                 this.log('success', 'Script executed successfully');
+                // Показываем вывод если есть
+                if (data.output) {
+                    this.log('info', `Output: ${data.output}`);
+                }
+                // Показываем предупреждение если есть (для симуляции)
+                if (data.warning) {
+                    this.log('warning', `⚠️ ${data.warning}`);
+                }
             } else {
                 this.log('error', `Execution failed: ${data.error || 'Unknown error'}`);
+                // Показываем подсказку если есть
+                if (data.hint) {
+                    this.log('warning', `💡 ${data.hint}`);
+                }
             }
         } catch (error) {
             this.log('error', `Execute failed: ${error.message}`);
@@ -172,7 +184,7 @@ class ExecutorUI {
             const data = await response.json();
             
             if (data.running) {
-                this.elements.bridgeStatus.textContent = `Online (${data.connected_clients} clients)`;
+                this.elements.bridgeStatus.textContent = `Online (${data.clients} clients)`;
                 this.elements.bridgeStatus.className = 'status-value connected';
             } else {
                 this.elements.bridgeStatus.textContent = 'Offline';

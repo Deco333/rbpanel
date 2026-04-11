@@ -90,8 +90,20 @@ class BridgeServer:
             pass
         return None
     
+    def run_threaded(self):
+        """Запуск сервера в текущем потоке с возможностью обновления статуса"""
+        self.is_running = True
+        # Запускаем Flask в этом потоке (блокирующе)
+        self.app.run(
+            host=self.host,
+            port=self.port,
+            debug=False,
+            use_reloader=False,
+            threaded=True
+        )
+
     def start(self):
-        """Start the bridge server"""
+        """Start the bridge server in background thread"""
         if self.is_running:
             return
         
@@ -130,3 +142,8 @@ class BridgeServer:
     def is_client_connected(self, pid: int) -> bool:
         """Check if specific client is connected"""
         return pid in self.connected_pids
+    
+    def update_client_count(self, count: int):
+        """Update client count from external source (for main.py integration)"""
+        # Это заглушка для будущего расширения
+        pass

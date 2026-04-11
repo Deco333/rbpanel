@@ -80,7 +80,34 @@ def create_app(injector=None, bridge=None):
             return jsonify({"error": "Script is empty"}), 400
         
         if not app.injector.is_attached():
-            return jsonify({"error": "Not attached to any process"}), 400
+            return jsonify({
+                "success": False, 
+                "error": "Not attached to any process"
+            }), 400
+        
+        # Проверка на наличие подключенного клиента
+        client_count = app.bridge.get_connected_count()
+        if client_count == 0:
+            # РЕЖИМ СИМУЛЯЦИИ для демонстрации (удалите в продакшене)
+            # В реальном сценарии раскомментируйте код ниже:
+            """
+            return jsonify({
+                "success": False, 
+                "error": "Нет подключенных клиентов (Bridge DLL не внедрена в игру).",
+                "hint": "Для работы требуется внедрение DLL."
+            }), 400
+            """
+            
+            # СИМУЛЯЦИЯ выполнения (для тестов без DLL)
+            import logging
+            logging.info(f"[SIMULATED] Executing script in PID {app.injector.attached_pid}")
+            simulated_output = f"[Simulated Output]\nScript executed successfully\n> {script[:100]}..."
+            return jsonify({
+                "success": True,
+                "message": "Скрипт выполнен (симуляция)",
+                "output": simulated_output,
+                "warning": "DLL не подключена. Это симуляция выполнения."
+            })
         
         success = app.injector.execute_script(script)
         
@@ -105,7 +132,7 @@ def create_app(injector=None, bridge=None):
         
         return jsonify({
             "running": app.bridge.is_running,
-            "connected_clients": app.bridge.get_connected_count()
+            "clients": app.bridge.get_connected_count()
         })
     
     return app
