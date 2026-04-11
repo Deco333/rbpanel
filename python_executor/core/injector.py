@@ -48,6 +48,13 @@ class Injector:
         if not self.is_attached():
             return False
         
+        # Проверка наличия подключенного клиента (DLL в игре)
+        if self.bridge.get_connected_count() == 0:
+            print("Warning: No connected clients (Bridge DLL not injected)")
+            # В реальном сценарии здесь была бы ошибка
+            # Для демонстрации продолжаем но с предупреждением
+            return False
+        
         # Compile the script
         bytecode = self.compiler.compile(source)
         if not bytecode:

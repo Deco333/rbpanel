@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox External Executor</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎮 Roblox External Executor</h1>
+            <div class="status-bar">
+                <span id="status-indicator" class="status-dot offline"></span>
+                <span id="status-text">Disconnected</span>
+                <span id="pid-display" class="pid-info"></span>
+                <span id="bridge-status" class="bridge-info">Bridge: Offline</span>
+            </div>
+        </header>
+
+        <main>
+            <section class="control-panel">
+                <div class="process-selector">
+                    <label for="process-select">Select Process:</label>
+                    <select id="process-select">
+                        <option value="">-- Select Roblox Process --</option>
+                    </select>
+                    <button id="refresh-processes" class="btn btn-secondary">🔄 Refresh</button>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="btn-attach" class="btn btn-primary">📎 Attach</button>
+                    <button id="btn-inject" class="btn btn-warning">💉 Inject DLL</button>
+                    <button id="btn-detach" class="btn btn-danger">❌ Detach</button>
+                </div>
+            </section>
+
+            <section class="editor-panel">
+                <div class="editor-header">
+                    <h2>Script Editor</h2>
+                    <div class="editor-actions">
+                        <button id="btn-execute" class="btn btn-success">▶ Execute</button>
+                        <button id="btn-clear" class="btn btn-secondary">🗑 Clear</button>
+                    </div>
+                </div>
+                <textarea id="script-editor" placeholder="Enter your Lua script here...&#10;&#10;Example:&#10;print(&quot;Hello from Roblox!&quot;)&#10;game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 50"></textarea>
+            </section>
+
+            <section class="output-panel">
+                <div class="output-header">
+                    <h2>Output Console</h2>
+                    <button id="btn-clear-output" class="btn btn-secondary">🗑 Clear Output</button>
+                </div>
+                <div id="output-console" class="console-output">
+                    <div class="log-entry info">[*] Ready to attach...</div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>External Executor v1.0 | Built with Python & C++</p>
+        </footer>
+    </div>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
