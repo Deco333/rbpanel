@@ -186,12 +186,12 @@ class RobloxCheatGUI:
                                value=part, indicatoron=False, width=15, anchor='w')
             rb.pack(fill='x', pady=1)
         
-        # Размер хитбокса
+        # Размер хитбокса - с явным указанием значения (без привязки к переменной)
         size_frame = tk.Frame(hitbox_frame)
         size_frame.pack(fill='x', pady=3)
         tk.Label(size_frame, text="Размер:").pack(side='left')
-        self.hitbox_size_var = tk.StringVar(value="1.0")
-        self.hitbox_size_entry = tk.Entry(size_frame, textvariable=self.hitbox_size_var, width=10)
+        self.hitbox_size_entry = tk.Entry(size_frame, width=10)
+        self.hitbox_size_entry.insert(0, "1.0")  # Устанавливаем значение напрямую
         self.hitbox_size_entry.pack(side='left', padx=5)
         tk.Button(size_frame, text="Применить", command=self.apply_hitbox, width=8).pack(side='left')
 
@@ -512,7 +512,8 @@ class RobloxCheatGUI:
         try:
             target_type = self.hitbox_type.get()
             body_part = self.body_part_var.get()
-            size = float(self.hitbox_size_var.get())
+            # Получаем значение напрямую из Entry, а не через StringVar
+            size = float(self.hitbox_size_entry.get())
             
             if target_type == "Player":
                 self.set_player_hitbox(body_part, size)
@@ -524,19 +525,28 @@ class RobloxCheatGUI:
             messagebox.showerror("Ошибка", f"Не удалось применить хитбокс:\n{str(e)}")
 
     def set_player_hitbox(self, part_name: str, size: float):
-        """Установка хитбокса игрока"""
-        if not self.character:
+        """Установка хитбокса для других игроков (НЕ для себя)"""
+        if not self.game or not self.local_player:
             return
         
         try:
-            part = self.character.FindFirstChild(part_name)
-            if part:
-                # Изменяем размер части
-                current_size = part.Size
-                new_size = Vector3(size, size, size)
-                part.Size = new_size
-        except:
-            pass
+            # Получаем всех игроков кроме себя
+            all_players = self.game.Players.GetPlayers()
+            
+            for player in all_players:
+                # Пропускаем себя - НИКОГДА не меняем хитбокс локальному игроку
+                if player.Name == self.local_player.Name:
+                    continue
+                
+                character = player.Character
+                if character:
+                    part = character.FindFirstChild(part_name)
+                    if part:
+                        # Изменяем размер части
+                        new_size = Vector3(size, size, size)
+                        part.Size = new_size
+        except Exception as e:
+            print(f"Ошибка при установке хитбокса игрокам: {e}")
 
     def set_npc_hitbox(self, part_name: str, size: float):
         """Установка хитбокса NPC"""
